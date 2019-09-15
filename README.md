@@ -1,2 +1,5 @@
-# fullstack_open_2019
-Solutions to the Fullstack Open MOOC offered by the University of Helsinki - https://fullstackopen.com/en . 
+# Fullstack Open 2019 Solutions
+Solutions to the Fullstack Open MOOC offered by the University of Helsinki - https://fullstackopen.com/en. 
+By - 
+Krishna Kumar K
+Aalto University
