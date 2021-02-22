@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom'
 
 const App = () => {
   // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
   const clickFeedback = (feedback)=>{
     switch (feedback) {
@@ -20,6 +20,15 @@ const App = () => {
         break;
     }
   }
+
+// Total number of feedbacks received
+const total = good + bad + neutral;
+// Average feedback score between -1 and 1. 
+// Good = +1; Neutral = 0; Bad = -1;
+const average = (good-bad)/total;
+// Percentage of positive feedback to total feedback provided.
+const postitivePercent = good/total*100;
+
 
 
   return (
@@ -47,6 +56,13 @@ const App = () => {
           Neutral {neutral}
           <br/>
           Bad {bad}
+          <br/>
+          All {total}
+          <br/>
+          Average {total==0?0:average}
+          <br/>
+          Positive {total==0?0:postitivePercent} %
+
         </p>
       </div>
     </div>
