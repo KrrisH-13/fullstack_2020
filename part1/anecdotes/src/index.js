@@ -3,18 +3,28 @@ import ReactDOM from 'react-dom'
 
 const App = ({anecdotes}) => {
 
-  const [selected, setSelected] = useState(0)
-  
-  const selectNext = (max, current)=>{
-    var randomIndex = current;
+  const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(anecdotes.map(()=> 0));
+
+  const selectNext = (max, currentIndex)=>{
+    var randomIndex = currentIndex;
     // console.log('current',current)
     // Select a next anecdote which is not same as the current selected anecdote.
     do {
-      randomIndex = Math.floor(Math.random()*max)
-    } while (randomIndex==current);
+      randomIndex = Math.floor(Math.random()*max);
+    } while (randomIndex==currentIndex);
     
     // console.log('selected', randomIndex)
-    setSelected(randomIndex)
+    setSelected(randomIndex);
+  }
+  
+  // Function to update votes cast for anecdotes
+  const castVote = (currentIndex)=>{
+    var updatedVotes = [...votes];
+    updatedVotes[currentIndex] += 1;
+    setVotes(updatedVotes);
+    // console.log(votes)
+    // console.log(updatedVotes)
   }
 
   return (
@@ -22,6 +32,7 @@ const App = ({anecdotes}) => {
       {anecdotes[selected]}
       <br/>
       <button onClick={() => selectNext(anecdotes.length, selected)}>Next anecdote</button>
+      <button onClick={() => castVote(selected)}>Vote</button>
     </div>
   )
 }
@@ -34,6 +45,7 @@ const anecdotes = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
+
 
 ReactDOM.render(
   <App anecdotes={anecdotes} />,
