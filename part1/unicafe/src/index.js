@@ -1,6 +1,25 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
+const Statistic = ({text,value}) => {
+  return(
+    <>
+      {text} {value}
+    </>
+  )
+}
+
+
+const Button = ({text,giveFeedback}) =>{
+  return(
+    <>
+      <button onClick={giveFeedback}>
+        {text}
+      </button>
+    </>
+  )
+}
+
 
 
 const Statistics = ({good, neutral, bad}) =>{
@@ -14,32 +33,31 @@ const Statistics = ({good, neutral, bad}) =>{
 
   if(total == 0){
     return (
-      <div>
+      <>
         <h1>Statistics</h1>
         <p>
           No feedback given. 
         </p>
-      </div>
+      </>
     )
   }
 
   return(      
   <div>
     <h1>Statistics</h1>
-    <p>
-      Good {good}
+    <div>
+      <Statistic text='Good' value={good}/>
       <br/>
-      Neutral {neutral}
+      <Statistic text='Neutral' value={neutral}/>
       <br/>
-      Bad {bad}
+      <Statistic text='Bad' value={bad}/>
       <br/>
-      All {total}
+      <Statistic text='All' value={total}/>
       <br/>
-      Average {total==0?0:average}
+      <Statistic text='Average' value={total==0?0:average}/>
       <br/>
-      Positive {total==0?0:postitivePercent} %
-
-    </p>
+      <Statistic text='Positive' value={total==0?0:postitivePercent}/> %
+    </div>
   </div>
   )
 }
@@ -50,34 +68,14 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const clickFeedback = (feedback)=>{
-    switch (feedback) {
-      case 1:
-        setGood(good+1);
-        break;
-      case 2:
-          setNeutral(neutral+1);
-          break;
-      case 3:
-        setBad(bad+1);
-        break;
-    }
-  }
-
   return (
     <div>
       <div>
         <h1>Give Feedback</h1>
           <div>
-            <button onClick={() => clickFeedback(1)}>
-              good
-            </button>
-            <button onClick={() => clickFeedback(2)}>
-              neutral
-            </button>
-            <button onClick={() => clickFeedback(3)}>
-              bad
-            </button>
+            <Button text='Good' giveFeedback={()=>setGood(good+1)}/>
+            <Button text='Neutral' giveFeedback={()=>setNeutral(neutral+1)}/>
+            <Button text='Bad' giveFeedback={()=>setBad(bad+1)}/>
           </div>
       </div>
       <br/>
