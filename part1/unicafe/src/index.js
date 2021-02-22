@@ -1,6 +1,39 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
+
+
+const Statistics = ({good, neutral, bad}) =>{
+  // Total number of feedbacks received
+  const total = good + bad + neutral;
+  // Average feedback score between -1 and 1. 
+  // Good = +1; Neutral = 0; Bad = -1;
+  const average = (good-bad)/total;
+  // Percentage of positive feedback to total feedback provided.
+  const postitivePercent = good/total*100;
+
+
+  return(      
+  <div>
+    <h1>Statistics</h1>
+    <p>
+      Good {good}
+      <br/>
+      Neutral {neutral}
+      <br/>
+      Bad {bad}
+      <br/>
+      All {total}
+      <br/>
+      Average {total==0?0:average}
+      <br/>
+      Positive {total==0?0:postitivePercent} %
+
+    </p>
+  </div>
+  )
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
@@ -21,16 +54,6 @@ const App = () => {
     }
   }
 
-// Total number of feedbacks received
-const total = good + bad + neutral;
-// Average feedback score between -1 and 1. 
-// Good = +1; Neutral = 0; Bad = -1;
-const average = (good-bad)/total;
-// Percentage of positive feedback to total feedback provided.
-const postitivePercent = good/total*100;
-
-
-
   return (
     <div>
       <div>
@@ -47,24 +70,7 @@ const postitivePercent = good/total*100;
             </button>
           </div>
       </div>
-
-      <div>
-        <h1>Statistics</h1>
-        <p>
-          Good {good}
-          <br/>
-          Neutral {neutral}
-          <br/>
-          Bad {bad}
-          <br/>
-          All {total}
-          <br/>
-          Average {total==0?0:average}
-          <br/>
-          Positive {total==0?0:postitivePercent} %
-
-        </p>
-      </div>
+      <Statistics good={good} bad={bad} neutral={neutral}/>
     </div>
   )
 }
