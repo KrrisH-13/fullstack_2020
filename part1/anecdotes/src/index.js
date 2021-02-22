@@ -5,6 +5,7 @@ const App = ({anecdotes}) => {
 
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(anecdotes.map(()=> 0));
+  const [maxIndex, setMaxIndex] = useState(0);
 
   const selectNext = (max, currentIndex)=>{
     var randomIndex = currentIndex;
@@ -17,23 +18,41 @@ const App = ({anecdotes}) => {
     // console.log('selected', randomIndex)
     setSelected(randomIndex);
   }
-  
+
   // Function to update votes cast for anecdotes
   const castVote = (currentIndex)=>{
     var updatedVotes = [...votes];
     updatedVotes[currentIndex] += 1;
     setVotes(updatedVotes);
     // console.log(votes)
-    // console.log(updatedVotes)
+    // console.log(updatedVotes);
+
+    //Selecting anecdote with maximum votes 
+    var index = updatedVotes.indexOf(Math.max(...updatedVotes));
+    // console.log(index);
+    setMaxIndex(index)
   }
 
   return (
     <div>
-      {anecdotes[selected]}
-      <br/>
-      <button onClick={() => selectNext(anecdotes.length, selected)}>Next anecdote</button>
-      <button onClick={() => castVote(selected)}>Vote</button>
+      <div>
+        <h1>Anecdote of the day</h1>
+
+        {anecdotes[selected]}
+        <br/>
+        <br/>
+        Has {votes[selected]} votes. 
+        <br/>
+        
+        <button onClick={() => selectNext(anecdotes.length, selected)}>Next anecdote</button>
+        <button onClick={() => castVote(selected)}>Vote</button>
+      </div>
+      <div>
+        <h1>Anecdote with most votes</h1>
+        {anecdotes[maxIndex]}
+      </div>
     </div>
+
   )
 }
 
