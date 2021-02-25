@@ -4,20 +4,21 @@ const App = () => {
   const [ persons, setPersons ] = useState([
     {
       id:nanoid(), 
-      name: 'Arto Hellas' 
+      name: 'Arto Hellas',
+      number:'040-1234567' 
     }
   ]) 
   const [ newName, setNewName ] = useState('')
+  const [ newNumber, setNewNumber] = useState('')
+  
 
-  // Function to handle input in textbox for name 
-  const handleNameChange = (event) =>{
-    // console.log(event.target.value);
-    setNewName(event.target.value);
-  }
+  // Functions to handle input in textboxes
+  const handleNameChange = (event) => setNewName(event.target.value);
+  const handleNumberChange = (event) => setNewNumber(event.target.value);
+  
 
   const submitNewContact = (event)=>{
     event.preventDefault();
-    // console.log('submitting form',newName);
 
     // Checking if contact already exists in phonebook
     if (persons.find(person => person.name===newName)){
@@ -29,25 +30,46 @@ const App = () => {
     setPersons(persons.concat([
       {
         id:nanoid(),
-        name:newName
+        name:newName,
+        number:newNumber
       }
     ]));
 
     // clear text fields in the form
     setNewName('');
+    setNewNumber('');
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={submitNewContact}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-          {/* <div >debug: {newName}</div> */}
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                Name:
+              </td>
+              <td>
+                <input value={newName} onChange={handleNameChange}/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Number: 
+              </td>
+              <td>
+                <input value={newNumber} onChange={handleNumberChange}/>
+              </td>
+            </tr>
+            <tr>
+              <td/>
+              <td>
+                <button type="submit">add</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
       <h2>Numbers</h2>
       <div>
