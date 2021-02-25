@@ -19,6 +19,12 @@ const App = () => {
     event.preventDefault();
     // console.log('submitting form',newName);
 
+    // Checking if contact already exists in phonebook
+    if (persons.find(person => person.name===newName)){
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
+    
     //Update persons object with new contact details. generate new id. 
     setPersons(persons.concat([
       {
