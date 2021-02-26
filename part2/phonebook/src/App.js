@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import { nanoid } from 'nanoid'
+import ContactFilter from './components/ContactFilter'
+import NewContactForm from './components/NewContactForm'
+import ContactList from './components/ContactList'
+
 const App = () => {
   const [ persons, setPersons ] = useState([
     { id:nanoid(), name: 'Arto Hellas', number: '040-123456' },
@@ -67,56 +71,16 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <h3>Add new contact</h3>
-      <form onSubmit={submitNewContact}>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                Name:
-              </td>
-              <td>
-                <input value={newName} onChange={handleNameChange}/>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Number: 
-              </td>
-              <td>
-                <input value={newNumber} onChange={handleNumberChange}/>
-              </td>
-            </tr>
-            <tr>
-              <td/>
-              <td>
-                <button type="submit">add</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
+      <NewContactForm 
+        newName = {newName} 
+        newNumber = {newNumber} 
+        submitNewContact = {submitNewContact} 
+        handleNameChange = {handleNameChange} 
+        handleNumberChange = {handleNumberChange}/>
+
       <h2>Numbers</h2>
-      <div>
-        Filter contacts shown with <input value={searchPhrase} onChange={handleSearchChange}/>
-      </div>
-      <div>
-        <table>
-          <tbody>
-            {persons.length? persons.map((person)=>{
-              return (
-                <tr key={person.id}>
-                  <td> {person.name} </td>
-                  <td> {person.number} </td>
-                </tr>
-              )})
-              :
-              <tr>
-                <td> No contacts matching searched filter. </td>
-              </tr>
-          }
-          </tbody>
-        </table>
-      </div>
+      <ContactFilter searchPhrase={searchPhrase} handleSearchChange={handleSearchChange}/>
+      <ContactList persons={persons}/>
     </div>
   )
 }
