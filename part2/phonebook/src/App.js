@@ -1,27 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
 import ContactFilter from './components/ContactFilter'
 import NewContactForm from './components/NewContactForm'
 import ContactList from './components/ContactList'
+import axios from 'axios'
 
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { id:nanoid(), name: 'Arto Hellas', number: '040-123456' },
-    { id:nanoid(), name: 'Ada Lovelace', number: '39-44-5323523' },
-    { id:nanoid(), name: 'Dan Abramov', number: '12-43-234345' },
-    { id:nanoid(), name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
-  const [allContacts,setAllContacts] = useState([
-    { id:nanoid(), name: 'Arto Hellas', number: '040-123456' },
-    { id:nanoid(), name: 'Ada Lovelace', number: '39-44-5323523' },
-    { id:nanoid(), name: 'Dan Abramov', number: '12-43-234345' },
-    { id:nanoid(), name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
+  const [ persons, setPersons ] = useState([]);
+  const [allContacts,setAllContacts] = useState([]);
 
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber] = useState('');
   const [ searchPhrase, setSearchPhrase] = useState('');
   
+  useEffect(() =>{
+    console.log('in effect. component init');
+
+    axios
+      .get('http://localhost:3001/persons')
+      .then( response => {
+        console.log('got response from server');
+        setAllContacts(response.data);
+        setPersons(response.data);
+      });
+  },[])
 
   // Functions to handle input in textboxes
   const handleNameChange = (event) => setNewName(event.target.value);
