@@ -19,6 +19,13 @@ function App() {
     setDisplayCountries(filteredCountries);
   }
 
+  //Select a country using corresponding button
+  const selectCountry = (code)=>{
+    setDisplayCountries(allCountries.filter(country => country.numericCode === code));
+  }
+
+
+
   useEffect(()=>{
     axios
       .get(apiEndpoint)
@@ -36,7 +43,17 @@ function App() {
           (displayCountries.length>10)?
                 <span>Too many matches, specify another filter</span>
                 : displayCountries.length !==1?
-                      <div>{displayCountries.map(country => <div key={country.numericCode}>{country.name}</div>)} </div>
+                      <div>
+                        {displayCountries.map(country => {
+                              return( 
+                              <div key={country.numericCode}>
+                                <span>{country.name}</span>
+                                <button onClick={()=>selectCountry(country.numericCode)}>Show</button>
+                              </div>
+                              )}
+                          )} 
+                      </div>
+                      
                       :displayCountries.map((country)=><Country key={country.numericCode} countryData={country}/>)
         
         }
