@@ -3,5 +3,8 @@
 }
 
 .flag{
-  width: 100px;
+  width: 150px;
+}
+.weather-icon{
+  width: 75px;
 }

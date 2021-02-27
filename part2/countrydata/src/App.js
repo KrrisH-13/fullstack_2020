@@ -5,11 +5,11 @@ import Country from './components/Country';
 import Filter from './components/Filter';
 
 function App() {
-  const apiEndpoint = 'https://restcountries.eu/rest/v2/all';
 
   const [allCountries, setAllCountries] =useState([]);
   const [displayCountries, setDisplayCountries] = useState([]);
   const [searchQuery, setSearchQuery] = useState([]);
+  const [weatherData, setWeatherData] = useState({temperature:0,weather_icons:[''],wind_speed:0,wind_dir:''});
 
 
   const searchQueryChange = (event)=> {
@@ -24,11 +24,10 @@ function App() {
     setDisplayCountries(allCountries.filter(country => country.numericCode === code));
   }
 
-
-
   useEffect(()=>{
+    const countriesApiEndpoint = 'https://restcountries.eu/rest/v2';
     axios
-      .get(apiEndpoint)
+      .get(countriesApiEndpoint+'/all')
       .then(response => setAllCountries(response.data))
   },[]);
 
@@ -53,9 +52,11 @@ function App() {
                               )}
                           )} 
                       </div>
-                      
-                      :displayCountries.map((country)=><Country key={country.numericCode} countryData={country}/>)
-        
+                      :displayCountries.map((country)=>
+                          <Country  key={country.numericCode} 
+                                    countryData={country} 
+                                    weatherData={weatherData} 
+                                    setWeatherData={setWeatherData}/>)
         }
       </div>
     </div>
