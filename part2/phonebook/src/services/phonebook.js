@@ -7,7 +7,7 @@ const getAll = () => {
 }
 
 const addContact = (newContact)=>{
-    const req = axios.post(baseApiUrl+'/persons',newContact);
+    const req = axios.post(baseApiUrl+'/persons', newContact);
     return req.then(response => response.data);
 }
 
@@ -16,6 +16,11 @@ const deleteContact = (id)=>{
     return req.then(req.data);
 }
 
-const phonebookService = { getAll, addContact, deleteContact };
+const updateContact = (contact)=>{
+    const req = axios.put(baseApiUrl+'/persons/'+contact.id, contact);
+    return req.then(req.data);
+}
+
+const phonebookService = { getAll, addContact, deleteContact, updateContact };
 
 export default phonebookService;

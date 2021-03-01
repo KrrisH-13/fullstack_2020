@@ -41,32 +41,44 @@ const App = () => {
     // console.log(query);
     setPersons(phonebook.filter(person => person.name.toLowerCase().includes(query.toLowerCase())));
   }
-  
 
+  const refreshPhonebook = (updatedPhonebook) =>{
+    //Update persons object with new contact details. generate new id. 
+    setAllContacts(updatedPhonebook);
+    // clear text fields in the form
+    setNewName('');
+    setNewNumber('');
+    //Filter according to the search query
+    filterContacts(updatedPhonebook, searchPhrase);
+
+  }
+  
 
   const submitNewContact = (event)=>{
     event.preventDefault();
-
+    
     // Checking if contact already exists in phonebook
     if (allContacts.find(person => person.name===newName)){
-      alert(`${newName} is already added to phonebook`);
+      if(window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new one?`)){
+        var updatedContact = allContacts.find(contact=> contact.name===newName);
+        updatedContact.number = newNumber;
+        phonebookService
+          .updateContact(updatedContact)
+          .then((createdContact) =>{
+            refreshPhonebook(allContacts.map((contact)=>contact.id!==createdContact.id?contact:createdContact));
+          })
+          .catch(error =>{
+            console.log('Error in HTTP request'+error);
+            alert('cannot contact server. Could not update contact');
+          });
+      }
       return;
     }
     var newContact = { name:newName, number:newNumber};
 
     phonebookService
       .addContact(newContact)
-      .then((createdContact) =>{
-        var updatedPhonebook = allContacts.concat([createdContact])
-        //Update persons object with new contact details. generate new id. 
-        setAllContacts(updatedPhonebook);
-        // clear text fields in the form
-        setNewName('');
-        setNewNumber('');
-    
-        //Filter according to the search query
-        filterContacts(updatedPhonebook, searchPhrase);
-      })
+      .then((createdContact) => refreshPhonebook(allContacts.concat([createdContact])))
       .catch(error =>{
         console.log('Error in HTTP request'+error);
         alert('cannot contact server. Could not create contact');
