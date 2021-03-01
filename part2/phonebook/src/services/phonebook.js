@@ -11,6 +11,11 @@ const addContact = (newContact)=>{
     return req.then(response => response.data);
 }
 
-const phonebookService = { getAll, addContact };
+const deleteContact = (id)=>{
+    const req = axios.delete(baseApiUrl + '/persons/' + id);
+    return req.then(req.data);
+}
+
+const phonebookService = { getAll, addContact, deleteContact };
 
 export default phonebookService;

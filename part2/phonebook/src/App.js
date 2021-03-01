@@ -71,11 +71,24 @@ const App = () => {
         console.log('Error in HTTP request'+error);
         alert('cannot contact server. Could not create contact');
       });
+    }
 
-
-
-  }
-
+    const deleteContact = (id, name) =>{
+     if (window.confirm(`Delete ${name}?`)){
+      phonebookService
+        .deleteContact(id)
+        .then(response =>{
+          var updatedPhonebook = allContacts.filter(contact => contact.id !== id);
+          setAllContacts(updatedPhonebook);
+          filterContacts(updatedPhonebook,searchPhrase);
+        })
+          .catch(error=>{
+            console.log('Error in HTTP request'+error);
+            alert('cannot contact server. Could not delete contact');
+          });
+     }
+    }
+  
   return (
     <div>
       <h2>Phonebook</h2>
@@ -89,7 +102,7 @@ const App = () => {
 
       <h2>Numbers</h2>
       <ContactFilter searchPhrase={searchPhrase} handleSearchChange={handleSearchChange}/>
-      <ContactList persons={persons}/>
+      <ContactList persons={persons} deleteContact={deleteContact}/>
     </div>
   )
 }
