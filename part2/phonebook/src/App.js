@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { nanoid } from 'nanoid'
 import ContactFilter from './components/ContactFilter'
 import NewContactForm from './components/NewContactForm'
 import ContactList from './components/ContactList'
-import axios from 'axios'
+import phonebookService from './services/phonebook'
+
 
 const App = () => {
   const [ persons, setPersons ] = useState([]);
@@ -14,15 +14,16 @@ const App = () => {
   const [ searchPhrase, setSearchPhrase] = useState('');
   
   useEffect(() =>{
-    console.log('in effect. component init');
-
-    axios
-      .get('http://localhost:3001/persons')
-      .then( response => {
-        console.log('got response from server');
-        setAllContacts(response.data);
-        setPersons(response.data);
-      });
+    phonebookService
+      .getAll()
+      .then((data)=>{
+        setAllContacts(data);
+        setPersons(data);
+      })
+      .catch(error =>{
+        console.log('Error in HTTP request'+error)
+        alert('cannot contact server.')
+    });
   },[])
 
   // Functions to handle input in textboxes
@@ -51,22 +52,28 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    var updatedPhonebook = allContacts.concat([
-      {
-        id:nanoid(),
-        name:newName,
-        number:newNumber
-      }
-    ]);
-    //Update persons object with new contact details. generate new id. 
-    setAllContacts(updatedPhonebook);
+    var newContact = { name:newName, number:newNumber};
 
-    // clear text fields in the form
-    setNewName('');
-    setNewNumber('');
+    phonebookService
+      .addContact(newContact)
+      .then((createdContact) =>{
+        var updatedPhonebook = allContacts.concat([createdContact])
+        //Update persons object with new contact details. generate new id. 
+        setAllContacts(updatedPhonebook);
+        // clear text fields in the form
+        setNewName('');
+        setNewNumber('');
+    
+        //Filter according to the search query
+        filterContacts(updatedPhonebook, searchPhrase);
+      })
+      .catch(error =>{
+        console.log('Error in HTTP request'+error);
+        alert('cannot contact server. Could not create contact');
+      });
 
-    //Filter according to the search query
-    filterContacts(updatedPhonebook, searchPhrase);
+
+
   }
 
   return (
