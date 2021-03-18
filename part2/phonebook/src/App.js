@@ -3,7 +3,8 @@ import ContactFilter from './components/ContactFilter'
 import NewContactForm from './components/NewContactForm'
 import ContactList from './components/ContactList'
 import phonebookService from './services/phonebook'
-
+import Notification from './components/Notification'
+import  './App.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([]);
@@ -12,7 +13,13 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber] = useState('');
   const [ searchPhrase, setSearchPhrase] = useState('');
-  
+  const [notificationCode, setNotificationCode] = useState(-1);
+  const [notificationMsg, setNotificationMsg] = useState('');
+
+  // Notifications display time in seconds.
+  const notificationDisplayDuration = 3;
+
+  // load contacts from API on load
   useEffect(() =>{
     phonebookService
       .getAll()
@@ -21,8 +28,9 @@ const App = () => {
         setPersons(data);
       })
       .catch(error =>{
-        console.log('Error in HTTP request'+error)
-        alert('cannot contact server.')
+        console.log(error);
+        setNotificationCode(2);
+        setNotificationMsg('Cannot contact server. Refresh page to try again.');
     });
   },[])
 
@@ -38,7 +46,6 @@ const App = () => {
   
   //Function to filter names by search query.
   const filterContacts = (phonebook,query) => {
-    // console.log(query);
     setPersons(phonebook.filter(person => person.name.toLowerCase().includes(query.toLowerCase())));
   }
 
@@ -51,6 +58,15 @@ const App = () => {
     //Filter according to the search query
     filterContacts(updatedPhonebook, searchPhrase);
 
+  }
+
+  const displayNotification = (code, message)=>{
+    setNotificationCode(code);
+    setNotificationMsg(message);
+    setTimeout(() => {
+      setNotificationCode(-1);
+      setNotificationMsg('');
+    }, notificationDisplayDuration*1000);
   }
   
 
@@ -66,10 +82,10 @@ const App = () => {
           .updateContact(updatedContact)
           .then((createdContact) =>{
             refreshPhonebook(allContacts.map((contact)=>contact.id!==createdContact.id?contact:createdContact));
+            displayNotification(1,`Contact details for ${createdContact.name} updated successfully.`)
           })
           .catch(error =>{
-            console.log('Error in HTTP request'+error);
-            alert('cannot contact server. Could not update contact');
+            displayNotification(2,'Cannot update contact.');
           });
       }
       return;
@@ -78,10 +94,12 @@ const App = () => {
 
     phonebookService
       .addContact(newContact)
-      .then((createdContact) => refreshPhonebook(allContacts.concat([createdContact])))
-      .catch(error =>{
-        console.log('Error in HTTP request'+error);
-        alert('cannot contact server. Could not create contact');
+      .then((createdContact) => {
+        refreshPhonebook(allContacts.concat([createdContact]));
+        displayNotification(1,`Added ${createdContact.name} successfully.`);
+      })
+      .catch(error =>{            
+        displayNotification(2,'Cannot create contact.');
       });
     }
 
@@ -90,13 +108,14 @@ const App = () => {
       phonebookService
         .deleteContact(id)
         .then(response =>{
+          var name = allContacts.filter(contact => contact.id ===  id)[0].name;
           var updatedPhonebook = allContacts.filter(contact => contact.id !== id);
           setAllContacts(updatedPhonebook);
           filterContacts(updatedPhonebook,searchPhrase);
+          displayNotification(1, `Contact details of ${name} successfully removed from phonebook.`)
         })
           .catch(error=>{
-            console.log('Error in HTTP request'+error);
-            alert('cannot contact server. Could not delete contact');
+            displayNotification(2,'Cannot delete contact.');
           });
      }
     }
@@ -104,6 +123,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification code={notificationCode} message={notificationMsg} />
       <h3>Add new contact</h3>
       <NewContactForm 
         newName = {newName} 

@@ -13,12 +13,12 @@ const addContact = (newContact)=>{
 
 const deleteContact = (id)=>{
     const req = axios.delete(baseApiUrl + '/persons/' + id);
-    return req.then(req.data);
+    return req.then(response => response.data);
 }
 
 const updateContact = (contact)=>{
     const req = axios.put(baseApiUrl+'/persons/'+contact.id, contact);
-    return req.then(req.data);
+    return req.then(response => response.data);
 }
 
 const phonebookService = { getAll, addContact, deleteContact, updateContact };
