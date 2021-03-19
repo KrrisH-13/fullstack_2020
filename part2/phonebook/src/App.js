@@ -85,7 +85,13 @@ const App = () => {
             displayNotification(1,`Contact details for ${createdContact.name} updated successfully.`)
           })
           .catch(error =>{
-            displayNotification(2,'Cannot update contact.');
+            // Entry already deleted in server
+            if(error.response.status === 404){
+              displayNotification(2,`${updatedContact.name} has already been removed from the server.`)
+              refreshPhonebook(allContacts.filter(contact => contact.id!==updatedContact.id))
+              return;
+            }
+            displayNotification(2,'Cannot update contact. ');
           });
       }
       return;
